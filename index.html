@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokémon Fetch</title>
+</head>
+
+<style>
+   @import url('https://fonts.cdnfonts.com/css/pokemon-solid');
+  body {
+    background-color: black;
+    color: orange;
+    scroll-behavior: smooth;
+    font-family: cursive;
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1{
+    color: yellow;
+    text-align: center;
+    text-shadow: 3px 3px 5px skyblue;
+    font-family: 'Pokemon Solid', sans-serif;
+    letter-spacing: 3px;
+  }
+
+  button{
+    background-color: lightblue;
+    border: 2px  solid  skyblue;
+    border-radius: 30px;
+    text-align: center;
+    color:purple;
+    font-size: 15px;
+    padding: 10px;
+    box-shadow: 5px 5px 30px gold;
+    font-family: cursive;
+  }
+
+  .head{
+    text-align: center;
+  }
+
+  #pokemon-card{
+    padding: 5px;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    align-content:center; 
+    text-align: center;
+    line-height: 10px;
+    width: 100%;
+    margin:0;
+    justify-content: space-evenly;
+    gap: 25px;
+    overflow: hidden;
+  }
+
+  h2{
+    color: yellow;
+    font-size: 20px;
+    font-family: 'Pokemon Solid', sans-serif;
+    letter-spacing: 3px;
+  }
+
+  .pokeitem{
+    border-style: solid;
+    border-color: skyblue;
+    border-width: 3px;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 7px 10px 5px lightblue;
+  }
+
+  strong{
+    color: plum;
+  }
+
+  img{
+    border-color: lightblue;
+    border-width: 1px;
+    border-style: groove;
+    border-radius: 50px;
+  }
+
+  footer{
+    color: yellow;
+    text-align: center;
+    margin-top: 350px;
+  }
+
+</style>
+
+<body>
+  <h1>Pokémon</h1>
+  <main>
+  <div class="head">
+    <button onclick="getPokemon()"><b>Go </b></button>
+  </div>
+  <div id="pokemon-card"></div>
+  </main>
+  
+  <footer>&copy;2025 | Pokémon Fetch | All Rights Reserved.</footer>
+  <script>
+    async function getPokemon() {
+      const url = 'https://pokeapi.co/api/v2/pokemon?limit=100';
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+      
+        const pokecard=document.getElementById('pokemon-card');
+        pokecard.innerHTML='';
+
+        const promises = data.results.forEach(async(poke) => {
+          const res = await fetch(poke.url);
+          const details = await res.json();
+
+          const pokeitems = document.createElement("div");
+          pokeitems.className="pokeitem";
+        
+
+        pokeitems.innerHTML = `
+          <h2>${details.name}</h2>
+          <img src="${details.sprites.front_default}" alt="${details.name}">
+          <p><strong>Height:</strong> ${details.height}</p>
+          <p><strong>Weight:</strong> ${details.weight}</p>
+          <p><strong>Base Experience:</strong> ${details.base_experience}</p>
+        `;
+      pokecard.appendChild(pokeitems)});
+
+      } catch (error) {
+        console.error('Error fetching Pokémon data:', error);
+        document.getElementById('pokemon-card').innerHTML = `<p>Failed to load Pokémon data.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
